@@ -49,7 +49,7 @@ const ativos = nome => db.emprestimos.filter(e => e.cliente === nome && !e.devol
 const atrasado = e => !e.devolvido && diasAte(e.prevista) < 0;
 const temMulta = nome => db.pagamentos.some(p => p.cliente === nome && !p.pago && p.motivo.startsWith('Multa'));
 const hora = d => d.toLocaleTimeString('pt-BR', {hour:'2-digit', minute:'2-digit'});
-/* Avisos do cliente = calculados (prazos e reservas) + enviados pelo administrador */
+
 function avisosDoCliente(nome){
   const lista = [];
   ativos(nome).forEach(e => {
