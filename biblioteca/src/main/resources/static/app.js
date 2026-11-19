@@ -1,4 +1,4 @@
-/* Biblioteca Página Aberta - front end (dados mockados, sem back end) */
+
 const hoje = new Date(); hoje.setHours(0,0,0,0);
 const dia = n => { const d = new Date(hoje); d.setDate(d.getDate()+n); return d; };
 const fmt = d => d.toLocaleDateString('pt-BR');
@@ -37,10 +37,9 @@ db.clientes = [
   {id:2,nome:'Marina Souza',email:'marina@email.com',telefone:'(71) 98888-2222'},
   {id:3,nome:'Carlos Lima',email:'carlos@email.com',telefone:'(71) 97777-3333'},
 ];
-db.avisos = [];    // avisos enviados pelo administrador: {cliente, tipo, texto}
-db.leituras = [];  // leituras na biblioteca: {cliente, livroId, ate}
-/* Capa de cada livro: salve a imagem em img/capas/ com o nome do título, em .jpg, .png ou .webp
-   (ex.: img/capas/dom-casmurro.jpg). Para usar outro nome, adicione  capa:'img/capas/x.png'  ao livro. */
+db.avisos = [];    
+db.leituras = [];  
+
 const slug = t => t.normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'');
 db.livros.forEach(l => l.capa = l.capa || 'img/capas/' + slug(l.titulo) + '.jpg');
 let sessao = JSON.parse(sessionStorage.getItem('sessao') || 'null');
@@ -77,8 +76,7 @@ function toast(msg){
 }
 const LOGO = `<img class="logo" src="img/logo.png" alt="Biblioteca Página Aberta">`;
 
-/* ---------- Layouts ---------- */
-/* Ícones do menu inferior (um por rota) */
+
 const ic = d => `<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${d}</svg>`;
 const ICONES = {
   'inicio': ic('<path d="M3 11l9-8 9 8v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/>'),
@@ -107,7 +105,7 @@ function layoutAdmin(ativo, corpo){
   <nav class="nav admin">${abas.map(([r,n])=>`<a href="#/${r}" class="${ativo===r?'on':''}">${ICONES[r]}<span>${n}</span></a>`).join('')}</nav>`;
 }
 const capa = (l, g='') => `<div class="capa img ${g}" data-cor="${cores[l.id % cores.length]}" data-t="${esc(l.titulo)}"><img src="${l.capa}" alt="Capa de ${esc(l.titulo)}" loading="lazy"></div>`;
-/* Se a imagem não existir, tenta outros formatos e por fim mostra uma capa colorida com o título */
+
 function ligarCapas(){
   const exts = ['jpg','jpeg','png','webp'];
   const falha = img => { const c = img.parentNode; c.className = c.className.replace('img','').trim(); c.style.background = c.dataset.cor; c.textContent = c.dataset.t; };
@@ -134,7 +132,7 @@ const listaLeituras = ls => ls.length
   ? `<ul class="lista">${ls.map(x => `<li><span>${esc(livro(x.livroId).titulo)}<br><small>${esc(x.cliente)} · até ${hora(x.ate)}</small></span>${tag(['warn','Em leitura'])}</li>`).join('')}</ul>`
   : '<p class="vazio">Nenhuma leitura em andamento.</p>';
 
-/* ---------- Telas ---------- */
+
 const telas = {
   login: () => `<div class="auth">${LOGO}<h1>Entrar</h1><p class="sub">Acesse sua conta da biblioteca</p>
     <form id="f-login" novalidate>
@@ -282,7 +280,7 @@ const telas = {
   },
 };
 
-/* ---------- Roteador ---------- */
+
 function rota(){
   const h = (location.hash.replace('#/','') || 'login');
   const m = h.match(/^(.*)\/(\d+)$/);
@@ -306,7 +304,7 @@ function ligarAvisos(){
   });
 }
 
-/* ---------- Eventos ---------- */
+
 function ligar(nome){
   const $ = s => document.querySelector(s);
   ligarCapas(); ligarAvisos();
