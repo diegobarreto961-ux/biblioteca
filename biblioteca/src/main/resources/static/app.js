@@ -294,7 +294,7 @@ function rota(){
 }
 window.addEventListener('hashchange', rota);
 
-/* Botões "Enviar aviso" (administrador) */
+
 function ligarAvisos(){
   document.querySelectorAll('[data-aviso]').forEach(b => b.onclick = () => {
     const e = db.emprestimos.find(x => x.id == b.dataset.aviso);
@@ -367,7 +367,7 @@ function ligar(nome){
     toast('Leitura reservada até ' + hora(ate) + '. A taxa aparece em Pagamentos.'); location.hash = '#/meus';
   });
 
-  /* admin */
+ 
   if(nome === 'admin/clientes'){
     const desenhar = () => {
       const q = $('#busca-c').value.toLowerCase();
