@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -100,5 +101,41 @@ public class EmprestimoService {
         Emprestimo devolvido = emprestimoRepository.save(emprestimo);
 
         return EmprestimoResponse.de(devolvido);
+    }
+
+    @Transactional(readOnly = true)
+    public List<EmprestimoResponse> listarTodos() {
+        return emprestimoRepository.findAll()
+                .stream()
+                .map(EmprestimoResponse::de)
+                .toList();
+    }
+
+    @Transactional(readOnly = true)
+    public List<EmprestimoResponse> listarPorCliente(Integer idCliente) {
+
+        Usuario usuario = usuarioRepository.findById(idCliente)
+                .orElseThrow(() -> new RegraNegocioException(
+                        "Cliente não encontrado", HttpStatus.NOT_FOUND));
+
+        if (!(usuario instanceof Cliente)) {
+            throw new RegraNegocioException(
+                    "O usuário informado não é um cliente", HttpStatus.BAD_REQUEST);
+        }
+
+        return emprestimoRepository.findByClienteId(idCliente)
+                .stream()
+                .map(EmprestimoResponse::de)
+                .toList();
+    }
+
+    @Transactional(readOnly = true)
+    public EmprestimoResponse buscarPorId(Integer idEmprestimo) {
+
+        Emprestimo emprestimo = emprestimoRepository.findById(idEmprestimo)
+                .orElseThrow(() -> new RegraNegocioException(
+                        "Empréstimo não encontrado", HttpStatus.NOT_FOUND));
+
+        return EmprestimoResponse.de(emprestimo);
     }
 }
