@@ -77,4 +77,28 @@ public class EmprestimoService {
 
         return EmprestimoResponse.de(salvo);
     }
+
+    @Transactional
+    public EmprestimoResponse devolver(Integer idEmprestimo) {
+
+        Emprestimo emprestimo = emprestimoRepository.findById(idEmprestimo)
+                .orElseThrow(() -> new RegraNegocioException(
+                        "Empréstimo não encontrado", HttpStatus.NOT_FOUND));
+
+        if (emprestimo.getStatus() != StatusEmprestimo.ATIVO) {
+            throw new RegraNegocioException(
+                    "Este empréstimo já foi devolvido", HttpStatus.CONFLICT);
+        }
+
+        emprestimo.setStatus(StatusEmprestimo.DEVOLVIDO);
+        emprestimo.setDataDevolucaoReal(LocalDate.now());
+
+        Livro livro = emprestimo.getLivro();
+        livro.setQuantidadeDisponivel(livro.getQuantidadeDisponivel() + 1);
+
+        livroRepository.save(livro);
+        Emprestimo devolvido = emprestimoRepository.save(emprestimo);
+
+        return EmprestimoResponse.de(devolvido);
+    }
 }
