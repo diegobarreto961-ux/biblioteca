@@ -28,7 +28,8 @@ public class SecurityConfig {
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers("/api/auth/**").permitAll()
                 .requestMatchers("/api/admin/**").hasRole("ADMINISTRADOR")
-                .anyRequest().authenticated())
+                .requestMatchers("/api/**").authenticated()
+                .anyRequest().permitAll())
             .oauth2ResourceServer(oauth2 -> oauth2
                 .jwt(jwt -> jwt.jwtAuthenticationConverter(conversorDePerfil())));
         return http.build();
@@ -43,4 +44,5 @@ public class SecurityConfig {
         conversor.setJwtGrantedAuthoritiesConverter(autoridades);
         return conversor;
     }
+
 }
