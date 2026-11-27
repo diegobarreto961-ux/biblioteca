@@ -1,6 +1,7 @@
 package br.com.codexa.biblioteca.service;
 
 import br.com.codexa.biblioteca.dto.CadastroClienteRequest;
+import br.com.codexa.biblioteca.dto.ClienteResponse;
 import br.com.codexa.biblioteca.exception.RegraNegocioException;
 import br.com.codexa.biblioteca.model.Cliente;
 import br.com.codexa.biblioteca.repository.UsuarioRepository;
@@ -9,6 +10,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -39,6 +42,15 @@ public class UsuarioService {
         cliente.setTelefone(telefone);
         cliente.setSenhaHash(passwordEncoder.encode(request.senha()));
         return usuarioRepository.save(cliente);
+    }
+
+    @Transactional(readOnly = true)
+    public List<ClienteResponse> listarClientes() {
+        return usuarioRepository.findAll().stream()
+                .filter(Cliente.class::isInstance)
+                .map(Cliente.class::cast)
+                .map(ClienteResponse::de)
+                .toList();
     }
 
     private String normalizar(String valor) {
